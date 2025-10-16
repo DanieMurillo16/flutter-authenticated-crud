@@ -19,9 +19,24 @@ class ProductsDatasourceImpl extends ProductsDatasource {
   }
 
   @override
-  Future<Products> getProductsById(String id) {
-    // TODO: implement getProductsById
-    throw UnimplementedError();
+  Future<Products> getProductsById(String id) async {
+    try {
+      final response = await dio.get('/products/$id');
+      final Products product = ProductMapper.jsonToEntity(response.data);
+      return product;
+    } on DioException catch (e) {
+      // 1. Manejo de error de Dio (ej: 404, 500)
+      if (e.response?.statusCode == 404) {
+        // Si el servidor responde con 404 (No Encontrado), lanza una excepción específica.
+        throw Exception(
+            'Error en el servidor, producto no encontrado: ${e.message}');
+      }
+      // Para cualquier otro error de Dio (problemas de conexión, 500, etc.)
+      throw Exception('Error al obtener el producto: ${e.message}');
+    } catch (e) {
+      // 2. Manejo de errores de código (ej: error en la serialización del JSON)
+      throw Exception('Error inesperado al cargar el producto.');
+    }
   }
 
   @override
