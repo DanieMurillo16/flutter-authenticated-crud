@@ -27,9 +27,7 @@ class GeometricalBackground extends StatelessWidget {
     return SizedBox.expand(
       child: Stack(
         children: [
-
           Positioned(child: Container(color: backgroundColor)),
-
           // Background with shapes
           Container(
             height: size.height * 0.7,
