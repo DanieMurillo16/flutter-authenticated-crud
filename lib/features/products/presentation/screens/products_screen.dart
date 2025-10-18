@@ -25,7 +25,9 @@ class ProductsScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton.extended(
         label: const Text('Nuevo producto'),
         icon: const Icon(Icons.add),
-        onPressed: () {},
+        onPressed: () {
+          context.push('/product/new');
+        },
       ),
     );
   }
@@ -48,7 +50,6 @@ class _ProductsViewState extends ConsumerState {
     scroll.addListener(
       () {
         if ((scroll.position.pixels + 300) >= scroll.position.maxScrollExtent) {
-          print('llegando a su posicion maxima');
           ref.read(productsProvider.notifier).loandNexPage();
         }
       },

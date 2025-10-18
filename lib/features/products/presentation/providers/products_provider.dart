@@ -3,14 +3,12 @@ import 'package:teslo_shop/features/auth/auth.dart';
 import 'package:teslo_shop/features/products/domain/entities/product.dart';
 import 'package:teslo_shop/features/products/presentation/providers/producst_repository_providers.dart';
 
-
-final productsProvider= StateNotifierProvider<ProductsNotifier,ProductsState>((ref) {
-  final productsRepository=ref.watch(productsRepositoryProvider);
-  return ProductsNotifier(productsRepository: productsRepository);
-  
-},);
-
-
+final productsProvider = StateNotifierProvider<ProductsNotifier, ProductsState>(
+  (ref) {
+    final productsRepository = ref.watch(productsRepositoryProvider);
+    return ProductsNotifier(productsRepository: productsRepository);
+  },
+);
 
 class ProductsNotifier extends StateNotifier<ProductsState> {
   final ProductsRepository productsRepository;
@@ -18,6 +16,28 @@ class ProductsNotifier extends StateNotifier<ProductsState> {
   ProductsNotifier({required this.productsRepository})
       : super(ProductsState()) {
     loandNexPage();
+  }
+
+  Future<bool> createOrUpdateProduct(Map<String, dynamic> productlike) async {
+    try {
+      final product = await productsRepository.createUpdateProduct(productlike);
+      final isProductInList = state.products.any(
+        (element) => element.id == product.id,
+      );
+      if (!isProductInList) {
+        state = state.copyWhith(products: [...state.products, product]);
+        return true;
+      }
+      state = state.copyWhith(
+          products: state.products
+              .map(
+                (e) => (e.id == product.id) ? product : e,
+              )
+              .toList());
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   Future loandNexPage() async {
