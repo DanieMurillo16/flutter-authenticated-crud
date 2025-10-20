@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:teslo_shop/features/products/domain/entities/product.dart';
 import 'package:teslo_shop/features/products/presentation/providers/forms/prodcut_from_provider.dart';
 import 'package:teslo_shop/features/products/presentation/providers/product_provider.dart';
+import 'package:teslo_shop/features/shared/shared.dart';
 import 'package:teslo_shop/features/shared/widgets/custom_product_field.dart';
 
 class ProductScreen extends ConsumerWidget {
@@ -47,10 +50,28 @@ class ProductScreen extends ConsumerWidget {
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Editar Producto'),
+          title: const Text('Editar Producto',style: TextStyle(fontSize: 20),),
           actions: [
             IconButton(
-                onPressed: () {}, icon: const Icon(Icons.camera_alt_outlined))
+                onPressed: () async {
+                  final pothoGallery =
+                      await CameraGalleryServicesImpl().selectPhoto();
+                  if (pothoGallery == null) return;
+                  ref
+                      .read(productFormProvider(product).notifier)
+                      .upDatePotho(pothoGallery);
+                },
+                icon: const Icon(Icons.photo_library_outlined)),
+            IconButton(
+                onPressed: () async {
+                  final pothoGallery =
+                      await CameraGalleryServicesImpl().takePhoto();
+                  if (pothoGallery == null) return;
+                  ref
+                      .read(productFormProvider(product).notifier)
+                      .upDatePotho(pothoGallery);
+                },
+                icon: const Icon(Icons.camera_alt_outlined)),
           ],
         ),
         body: _ProductView(product: product),
@@ -254,7 +275,6 @@ class _GenderSelector extends StatelessWidget {
         selected: {selectedGender},
         onSelectionChanged: (newSelection) {
           onGenderChanged(newSelection.first);
-          print(newSelection);
         },
       ),
     );
@@ -278,11 +298,19 @@ class _ImageGallery extends StatelessWidget {
                       fit: BoxFit.cover))
             ]
           : images.map((e) {
-              return ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(20)),
-                child: Image.network(
-                  e,
-                  fit: BoxFit.cover,
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(20)),
+                  child: e.startsWith('http')
+                      ? Image.network(
+                          e,
+                          fit: BoxFit.cover,
+                        )
+                      : Image.file(
+                          File(e),
+                          fit: BoxFit.cover,
+                        ),
                 ),
               );
             }).toList(),

@@ -31,7 +31,7 @@ class LoginScreen extends StatelessWidget {
               size: 100,
             ),
             Container(
-              height: size.height - 230, // 80 los dos sizebox y 100 el ícono
+              height: size.height - 200, // 80 los dos sizebox y 100 el ícono
               width: double.infinity,
               decoration: BoxDecoration(
                 color: scaffoldBackgroundColor,

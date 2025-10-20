@@ -4,4 +4,6 @@ export 'infrastructure/inputs/price.dart';
 export 'infrastructure/inputs/slug.dart';
 export 'infrastructure/inputs/stock.dart';
 export 'infrastructure/inputs/title.dart';
+export 'infrastructure/services/camera_gallery_services_impl.dart';
+export 'infrastructure/services/camera_gallery_services.dart';
 export 'widgets/widgets.dart';

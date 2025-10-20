@@ -68,6 +68,12 @@ class ProdcutFromNotifier extends StateNotifier<ProdcutFromState> {
     ]));
   }
 
+  void upDatePotho(String path){
+    state=state.copyWith(
+      images: [...state.images,path]
+    );
+  }
+
   void onTitleChange(String value) {
     state = state.copyWith(
         title: Title.dirty(value),
